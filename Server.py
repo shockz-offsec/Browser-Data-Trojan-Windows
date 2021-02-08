@@ -1,7 +1,6 @@
 import sqlite3
 import os
 
-<<<<<<< HEAD
 # obtener y leer
 # Copiar a otro directorio o no
 
@@ -74,19 +73,4 @@ print(os.path.isfile(TARGET_FILE_PATH["OPERAGX_HISTORY_DB_PATH"]))
 x = get_db_data("CHROME_HISTORY_DB_PATH","HISTORY_SQL")
 for i in x:
     print(i)
-=======
-#obtener y leer
-#Copiar a otro directorio o no
 
-#Enviar de client a server , haciendo que en el serve se guarden en x sitio.
-
-PathName = os.getenv('localappdata') + \
-            '\\Google\\Chrome\\User Data\\Default\\History'
-con = sqlite3.connect(PathName)
-cursor = con.cursor()
-cursor.execute("SELECT url FROM urls")
-urls = cursor.fetchall()
-
-for r in urls:
- print(r)
->>>>>>> origin/main

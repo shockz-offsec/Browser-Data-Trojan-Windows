@@ -89,7 +89,7 @@ def main():
     #Envio
     client.send_file(file, host, port)
     #Limpieza de pruebas
-    shutil.rmtree(file)
+    os.remove(file)
 
 if __name__ == "__main__":
     main()

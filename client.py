@@ -1,7 +1,7 @@
 import os
 import shutil
 import Sockets.sckt_client as client
-import threading
+
 host = "193.210.113.112"
 port = 5679
 

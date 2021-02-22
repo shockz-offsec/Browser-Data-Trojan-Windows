@@ -10,6 +10,7 @@ from Cryptodome.Cipher import AES
 
 #pip install pypiwin32
 #pip install pycryptodomex
+#pip install email-to
 
 BasePath = "Data/"
 

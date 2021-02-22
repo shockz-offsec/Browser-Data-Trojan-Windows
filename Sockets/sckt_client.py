@@ -1,7 +1,7 @@
 import socket
 import tqdm
 import os
-import glob
+
 SEPARATOR = "<SEPARATOR>"
 BUFFER_SIZE = 8192
 

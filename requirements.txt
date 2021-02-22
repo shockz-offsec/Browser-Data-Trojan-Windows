@@ -1,0 +1,5 @@
+pypiwin32
+pycryptodomex
+email-to
+openpyxl
+tqdm

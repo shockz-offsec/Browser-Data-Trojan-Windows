@@ -84,6 +84,8 @@ Modify all the parameters in the code (normally expressed as "xxxx"), guide your
 If you are using the client via TCP you will need to run the server.
 And then when the client is executed the server will accept the connection and the file will be sent and received.
 
+**You have to open the port in the router config** (In the server side), otherwise you wouldn't receive anything.
+
 In the case of being via smtp it is not necessary to run the server, just to process and decrypt the files.
 
 

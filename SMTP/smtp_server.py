@@ -9,8 +9,8 @@ import os
 
 COMMASPACE = ', '
 
-smtpUser = 'amazon42342@gmail.com'
-smtpPass = '581688jl'
+smtpUser = 'xxx@xxx.com'
+smtpPass = 'xxx'
 
 toAdd = ''
 fromAdd = smtpUser
@@ -43,7 +43,7 @@ def sendMail(to, subject, text, files=[]):
         # Attach the attachment to the MIMEMultipart object
         msg.attach(part)
 
-    #server = smtplib.SMTP('smtp.mail.ru:587')
+    #server = smtplib.SMTP('smtp.mail.ru:587') //in other case if u want to use a russian gmail (more anonymous)
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo_or_helo_if_needed()
     server.starttls()

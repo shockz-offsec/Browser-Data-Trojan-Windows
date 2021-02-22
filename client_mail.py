@@ -84,7 +84,7 @@ def main():
     # Limpieza de pruebas
     shutil.rmtree(BasePath + "/Temp/Copy/")
     # Envio
-    server.sendMail(['amazon42342@gmail.com'], "zipp", "zippp", [file])
+    server.sendMail(['xxx@xxx.com'], "zipp", "zippp", [file])
     # Limpieza de pruebas
     os.remove(file)
 

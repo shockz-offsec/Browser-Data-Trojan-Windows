@@ -2,7 +2,7 @@ import os
 import shutil
 import Sockets.sckt_client as client
 
-host = "193.210.113.112"
+host = "x.x.x.x"
 port = 5679
 
 def main():

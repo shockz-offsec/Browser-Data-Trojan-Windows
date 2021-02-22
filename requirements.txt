@@ -1,4 +1,6 @@
 pypiwin32
+pyinstaller
+pyarmor
 pycryptodomex
 email-to
 openpyxl

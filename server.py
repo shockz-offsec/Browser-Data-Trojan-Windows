@@ -235,7 +235,7 @@ def main():
         print("4. Check Historial")
         print("5. Decrypt Cookies")
         print("6. Check Bookmarks")
-        print("7. Cerrar")
+        print("7. Close")
 
 
         x = int(input())

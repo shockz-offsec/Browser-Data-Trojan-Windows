@@ -26,6 +26,14 @@ This project was made for the sole purpose of education and research for develop
 #
 <p align="center"><img src = "https://i.ibb.co/nMVwwFj/Untitled-Diagram-1.png"></p>
 <p align="center">Work Flow</p>
+#
+
+Regarding the process for decrypting the master key used for decrypting passwords and cookies, it was based on the following scheme, from which it can be extrapolated based on how the browser encrypts and decrypts passwords and cookies, how to decrypt them.
+
+It must be considered that each password and cookie are encrypted in the same way but individually.
+
+<p align="center"><img src = "https://i.ibb.co/pxs372S/Untitled-Diagram.png"></p>
+<p align="center">Passords and master_key Encrypt/Decrypt</p>
 
 ### Functions
 * **Client** (in fact this is the client's working flow):

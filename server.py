@@ -46,6 +46,7 @@ RESULT_EXCEL_FILE_PATH = {
     "OPERAGX_BOOKMARKS_EXCEL_PATH": BasePath + "Opera_bookmarks.xlsx"
 }
 
+"""
 def get_db_data(file,command,master_key=None):
     con = sqlite3.connect(PATH[file])
     cursor = con.cursor()
@@ -53,7 +54,7 @@ def get_db_data(file,command,master_key=None):
     data = cursor.fetchall()
 
     return data
-
+"""
 def run_server():
     server.server()
 

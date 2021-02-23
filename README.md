@@ -32,7 +32,7 @@ Regarding the process for decrypting the master key used for decrypting password
 
 It must be considered that each password and cookie are encrypted in the same way but individually.
 
-<p align="center"><img src = "https://i.ibb.co/pxs372S/Untitled-Diagram.png"></p>
+<p align="center"><img src = "https://i.ibb.co/hBzg6jY/Untitled-Diagram-1.jpg"></p>
 <p align="center">Passords and master_key Encrypt/Decrypt</p>
 
 ### Functions

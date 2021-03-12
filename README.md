@@ -23,7 +23,7 @@ This project was made for the sole purpose of education and research for develop
 
 <p align="center"><img src = "https://i.ibb.co/MNjhHtd/Untitled-Diagram.png"></p>
 <p align="center">Client-Server TCP Diagram</p>
-#
+
 <p align="center"><img src = "https://i.ibb.co/nMVwwFj/Untitled-Diagram-1.png"></p>
 <p align="center">Work Flow</p>
 

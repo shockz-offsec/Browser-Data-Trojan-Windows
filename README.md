@@ -2,7 +2,7 @@
 
 ## Description
 
-This client-server project allows the client to recompile all the information from the Chrome, Edge and OperaGX browsers and then compress it and send it to the server via TCP to the server, although it also has the option of doing so via Stmp.
+This client-server project allows the client to recompile all the information from the Chrome, Edge and OperaGX browsers and then compresses it and send it to the server via TCP to the server, although it also has the option of doing so via Stmp.
 
 Then the server allows decrypting all files, including passwords, cookies, etc ...
 

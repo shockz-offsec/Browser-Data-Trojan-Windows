@@ -10,7 +10,7 @@ SEPARATOR = b"<SEPARATOR>"
 
 
 def server():
-    os.chdir(r'C:\Users\Shockz\Desktop\Browser-Data-Trojan')
+    os.chdir(r'C:\Users\Shockz\Desktop\Browser-Data-Trojan-Windows')
 
     #Creo el socket
     sckt = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

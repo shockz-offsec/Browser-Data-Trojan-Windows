@@ -113,7 +113,3 @@ In the case of being via smtp it is not necessary to run the server, just to pro
 
 - Export the rest of the decrypted files to xlsx format
 
-
-## Author ✒️
-
-* **Jorge Manuel Lozano Gómez**
